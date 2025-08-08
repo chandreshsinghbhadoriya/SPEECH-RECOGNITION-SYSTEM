@@ -1,0 +1,29 @@
+import torch
+import torchaudio
+from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
+
+# Load pre-trained processor and model
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
+model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+model.eval()  # Set model to evaluation mode
+
+#  Load and resample audio to 16kHz
+audio_path = "audio_sample.wav"  # Make sure this is a clean mono WAV file
+waveform, original_sr = torchaudio.load(audio_path)
+if original_sr != 16000:
+    resampler = torchaudio.transforms.Resample(orig_freq=original_sr, new_freq=16000)
+    waveform = resampler(waveform)
+
+#  Preprocess audio and get input values
+input_values = processor(waveform[0], sampling_rate=16000, return_tensors="pt").input_values
+
+#  Perform inference
+with torch.inference_mode():
+    logits = model(input_values).logits
+
+#  Decode predicted tokens to text
+predicted_ids = torch.argmax(logits, dim=-1)
+transcription = processor.decode(predicted_ids[0])
+
+# S Output the result
+print("🎧 Recognized Speech:\n", transcription)
