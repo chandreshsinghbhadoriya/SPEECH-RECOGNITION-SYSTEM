@@ -39,3 +39,6 @@ Works offline, does not require an internet connection or API key.
 Highly accurate and suitable for general-purpose English speech recognition.
 
 Powered by PyTorch, torchaudio, and transformers libraries.
+
+*OUTPUT*
+<img width="582" height="76" alt="Image" src="https://github.com/user-attachments/assets/d50ff7e7-6251-4106-8d43-0af919b150d2" />
